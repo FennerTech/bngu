@@ -1,0 +1,199 @@
+<!-- -----------------------------------------------
+Big Number Go Up! (BNGU)
+(c) 2026 ff. Marco Fenner
+
+Urheberrechtlich geschützt.
+Kopieren erlaubt.
+Verändern nur mit Namensnennung des Autors ;-)
+Danke und Viel Spaß!
+------------------------------------------------ -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Number Go Up!</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta property="og:image" content="https://fennertech.github.io/bgnu/bngu-screenshot.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:alt" content="Vorschaubild der Website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://fennertech.github.io/bgnu/bngu-screenshot.jpg">
+    <meta name="twitter:image:alt" content="Vorschaubild der Website">
+
+<meta itemprop="image" content="https://fennertech.github.io/bgnu/bngu-screenshot.jpg">
+</head>
+<body>
+    <script language="JavaScript" src="https://www.besucherzaehler-kostenlos.de/js/counter.js.php?count=1&id=fennertech.github.iobngu&start=0&design=6"></script>
+
+    <canvas id="snowCanvas"></canvas>
+
+    <button id="langToggle">EN</button>
+    <button id="btnSnowShovel" data-i18n="btnSnowShovel">Schneeschieber</button>
+
+    <div id="cookieBanner" class="hidden">
+        <p>
+            Diese Website verwendet den lokalen Speicher Ihres Browsers, um Ihren Spielstand und die Uhrzeit Ihres Besuchs lokal zu speichern. Es werden keine Daten an Server übertragen.<br><br>
+            <span style="color: #888;">This website uses your browser's local storage to locally save your game progress and the time of your visit. No data is transmitted to servers.</span>
+        </p>
+        <button id="acceptCookies">Verstanden & Spielen | Understood & Play</button>
+    </div>
+
+    <div id="dailyModal" class="hidden">
+        <h2 id="dailyTitle">Täglicher Bonus!</h2>
+        <p id="dailyText"></p>
+        <button id="dailyBtn" data-i18n="btnClose">Schließen</button>
+    </div>
+
+    <div id="questsModal" class="hidden">
+        <h2 data-i18n="questsTitle" style="color: var(--color-main); margin-top: 0;">Tages-Missionen</h2>
+        <div class="quest-item">
+            <span data-i18n="quest1">1. Klicke 15 Münzen an:</span> 
+            <span id="qCoins" style="color: var(--color-main); font-weight: bold;">0/15</span>
+        </div>
+        <div class="quest-item">
+            <span data-i18n="quest2">2. Klicke 500 Mal auf die Zahl:</span> 
+            <span id="qClicks" style="color: var(--color-main); font-weight: bold;">0/500</span>
+        </div>
+        <div class="quest-item">
+            <span data-i18n="quest3">3. Spiele 10 Minuten aktiv:</span> 
+            <span id="qTime" style="color: var(--color-main); font-weight: bold;">0/10 Min</span>
+        </div>
+        <button id="btnClaimQuests" disabled style="width: 100%; margin-top: 20px;">Belohnung (500 Pkt) einsammeln</button>
+        <button id="closeQuestsBtn" data-i18n="btnClose" style="width: 100%; background-color: transparent; border: 1px solid var(--color-text); color: var(--color-text);">Schließen</button>
+    </div>
+
+    <div id="guideModal" class="hidden">
+        <h2 data-i18n="guideModalTitle" style="color: var(--color-main); margin-top: 0; margin-bottom: 15px;">Anleitung</h2>
+        <div class="scroll-container">
+            <h3 data-i18n="guideH1">Ziel des Spiels</h3>
+            <p data-i18n="guideP1">Sammle so viele Punkte wie möglich und steige in den Rängen auf!</p>
+            
+            <h3 data-i18n="guideH2">Punkte sammeln</h3>
+            <p data-i18n="guideP2">Die Zahl wächst von ganz allein – jede Sekunde. Wenn du offline bist, sammelst du ab einer Stunde inaktive Punkte. Du kannst aber auch aktiv auf die große Zahl klicken, um direkt Punkte zu generieren!</p>
+            
+            <h3 data-i18n="guideH3">Münzen</h3>
+            <p data-i18n="guideP3">Halte die Augen offen! Ab und zu tauchen Münzen auf. Klicke sie schnell an, bevor sie verschwinden, um dir einen dicken Bonus zu sichern.</p>
+            
+            <h3 data-i18n="guideH4">Missionen & Boni</h3>
+            <p data-i18n="guideP4">Schau täglich vorbei, um deinen Streak-Bonus zu kassieren, und erfülle die Tages-Missionen für Extra-Punkte.</p>
+        </div>
+        <button id="closeGuideBtn" data-i18n="btnClose" style="width: 100%; margin-top: auto; background-color: transparent; border: 1px solid var(--color-text); color: var(--color-text);">Schließen</button>
+    </div>
+
+    <div id="impressumModal" class="hidden">
+        <div class="scroll-container" style="margin-top: 10px;">
+            <h3 style="color: var(--color-main); margin-top: 0;">Informationen zu dieser Website / Impressum</h3>
+            <p><strong>Angaben gemäß § 5 TMG</strong></p>            
+            <p><strong>Betreiber der Website:</strong><br> Marco Fenner<br> Wiardastraße 19<br> 26603 Aurich<br> Deutschland</p>
+            <p><strong>Kontakt:</strong><br> E-Mail: datenschrauber(at)gmail.com<br> Telefon: +49 1573 004 2105</p>
+            <p>Vielen Dank für den Besuch meiner Website. Wenn Sie Ihnen gefallen hat, würde ich mich über eine kurze Nachricht sehr freuen. 😊</p>
+            <hr>            
+            <p><strong>Haftungsausschluss:</strong></p>            
+            <p><strong>Haftung für Inhalte</strong><br> Als Diensteanbieter bin ich gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG bin ich als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werde ich diese Inhalte umgehend entfernen.</p>
+            <p><strong>Haftung für Links</strong><br> Mein Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte ich keinen Einfluss habe. Deshalb kann ich für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werde ich derartige Links umgehend entfernen.</p>
+            <p><strong>Urheberrecht</strong><br> Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitte ich um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werde ich diese Inhalte umgehend entfernen.</p>
+            <hr>            
+            <p><strong>Datenschutz:</strong></p>            
+            <p>Die Nutzung meiner Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf meinen Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder E-Mail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben. Ich weise darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.</p>
+            <p><strong>Besucherzähler von <a href="https://www.besucherzaehler-kostenlos.de" target="_blank">besucherzaehler-kostenlos.de</a></strong><br> Diese Webseite verwendet einen externen Zähler, um die Anzahl der Webseitenaufrufe zu erfassen. Dafür wird ein Java-Script von einer externe Webseite geladen. Der Server von besucherzaehler-kostenlos.de speichert die IP-Adresse des Zugriffs anonymisiert und zeitlich begrenzt in einer LOG-Datei ab. Diese wird regelmäßig unwiderruflich gelöscht.</p>
+            <p>Um die korrekte Funktionsweise des Zählers zu gewährleisten, speichert der Besucherzähler zudem einen sogenannten Session-Cookie auf dem Computer des Besuchers ab. Dieser wird in der Regel vom Browser gelöscht, sobald er geschlossen wird. In diesem Cookie werden keine persönlichen Informationen gespeichert. Er enthält lediglich die Information der aufgerufenen Domain, sowie einen boolschen Tag (true/false), um den Besucher als bereits gezählt zu markieren.</p>
+            <p>Es werden auch darüberhinaus keine persönlichen oder personenbezogenen Daten vom Besucherzähler erhoben. Eine Nachverfolgung oder Zuordnung der Zugriffe ist zu keiner Zeit möglich. Ein besonderer Dank geht an <a href="https://www.howtodocentral.com" target="_blank">www.howtodocentral.com</a>, durch dessen Unterstützung dieser kostenlose Service erst möglich gemacht wird.</p>
+            <hr>            
+            <p><strong>Einsehbarkeit des Quellcodes:</strong><br> Der Quellcode dieser Seite ist vollständig für jedermann einsehbar.</p>
+            <p>
+                <span data-i18n="impVisSince">Besucher seit (Datum):</span> <span class="BZseit orange-val"></span><br>                
+                <span data-i18n="impVisOnline">Aktuell online:</span> <span class="BZonline orange-val"></span><br>                
+                <span data-i18n="impVisToday">Besucher heute:</span> <span class="BZheute orange-val"></span><br>                
+                <span data-i18n="impVisYest">Besucher gestern:</span> <span class="BZgestern orange-val"></span><br>                
+                <span data-i18n="impVisTotal">Besucher gesamt:</span> <span class="BZgesamt orange-val"></span>            
+            </p>
+        </div>
+        <button id="closeImpressumBtn" data-i18n="btnClose" style="width: 100%; margin-top: auto; background-color: transparent; border: 1px solid var(--color-text); color: var(--color-text);">Schließen</button>
+    </div>
+
+    <div id="resetModal" class="hidden">
+        <h2 data-i18n="resetTitle" style="color: #cc0000; margin-top: 0;">Spiel zurücksetzen?</h2>
+        <p data-i18n="resetText">Möchten Sie Ihren gesamten Spielstand und alle Statistiken wirklich löschen?</p>
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+            <button id="btnResetYes" data-i18n="btnResetYes" style="background-color: #cc0000;">Ja, zurücksetzen</button>
+            <button id="btnResetNo" data-i18n="btnResetNo" style="background-color: transparent; border: 1px solid var(--color-text); color: var(--color-text);">Nein, abbrechen</button>
+        </div>
+    </div>
+
+    <div id="gameContainer" class="hidden">
+        <h1 id="gameTitle" style="cursor: pointer; user-select: none;">Big Number Go Up! <span id="happyHourBadge" class="hidden" title="Happy Hour! Doppelte Münz-Chance!">🎉</span></h1>
+        
+        <div id="scoreDisplay" title="Klicken für Punkte!"></div>
+        
+        <p id="subText">
+            <span id="subTextContent">Long-term browsergame (c) 2026 by</span> <a href="mailto:datenschrauber@gmail.com">Datenschrauber</a>
+        </p>
+
+        <div id="actionButtons">
+            <button id="btnReset" data-i18n="btnReset">Zurücksetzen</button>
+            <button id="btnQuests" data-i18n="btnQuests" style="color: var(--color-main); border-color: var(--color-main);">Missionen</button>
+            <button id="btnGuide" data-i18n="btnGuide">Anleitung</button>
+            <button id="btnYouTube" data-i18n="btnYouTube">YouTube</button>
+            <button id="btnImprint" data-i18n="btnImprint">Impressum</button>
+            <button id="btnTheme" class="hidden" data-i18n="btnTheme">Design</button>
+            <button id="btnPrestige" class="hidden" data-i18n="btnPrestige" style="color: var(--color-main); border-color: var(--color-main);">Prestige</button>
+        </div>
+
+        <table id="statisticsTable">
+            <tbody>
+                <tr>
+                    <td data-i18n="statA">Aktuelle Sitzungsdauer:</td><td id="statA" class="val">00:00:00</td>
+                    <td data-i18n="statG">Gesamtspielzeit (seit Start):</td><td id="statG" class="val">0:00:00:00</td>
+                </tr>
+                <tr>
+                    <td data-i18n="statStreak">Aktueller Streak:</td><td id="statStreak" class="val">1</td>
+                    <td data-i18n="statMaxStreak">Längster Streak:</td><td id="statMaxStreak" class="val">1</td>
+                </tr>
+                <tr>
+                    <td data-i18n="statB">Heute aktiv erzielte Punkte:</td><td id="statB" class="val">0</td>
+                    <td data-i18n="statE">Gesamt aktiv erzielte Punkte:</td><td id="statE" class="val">0</td>
+                </tr>
+                <tr>
+                    <td data-i18n="statC">Heute inaktiv erzielte Punkte:</td><td id="statC" class="val">0</td>
+                    <td data-i18n="statF">Gesamt inaktiv erzielte Punkte:</td><td id="statF" class="val">0</td>
+                </tr>
+                <tr>
+                    <td data-i18n="statClicks">Manuelle Klicks auf die Zahl:</td><td id="statClicks" class="val">0</td>
+                    <td data-i18n="statClickPts">Punkte durch manuelle Klicks:</td><td id="statClickPts" class="val">0</td>
+                </tr>
+                <tr>
+                    <td data-i18n="statI">Heute angeklickte Münzen:</td><td id="statI" class="val">0</td>
+                    <td data-i18n="statK">Gesamt angeklickte Münzen:</td><td id="statK" class="val">0</td>
+                </tr>
+                <tr>
+                    <td data-i18n="statJ">Heute durch Münzen erzielte Punkte:</td><td id="statJ" class="val">0</td>
+                    <td data-i18n="statL">Gesamt durch Münzen erzielte Punkte:</td><td id="statL" class="val">0</td>
+                </tr>
+                <tr>
+                    <td data-i18n="statH">Münzen (Geklickt / Gezeigt / %):</td><td id="statH" class="val">0 / 0 / 0.0%</td>
+                    <td data-i18n="statRain">Münz-Regen Events:</td><td id="statRain" class="val">0</td>
+                </tr>
+                <tr>
+                    <td data-i18n="statRank">Aktueller Status:</td><td id="statFutureVal" class="val"></td>
+                    <td data-i18n="statPrestige">Prestige-Level:</td><td id="statPrestige" class="val">0</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: center; padding-top: 15px; border-right: none;">
+                        <span class="BZgesamt" style="color: var(--color-main); font-weight: bold;"></span> 
+                        <span data-i18n="statVisitorsText">Spieler seit</span> 
+                        <span class="BZseit" style="color: var(--color-main); font-weight: bold;"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
