@@ -427,13 +427,18 @@ function formatNumber(num) {
 }
 
 function checkCookies() {
-    if (localStorage.getItem('bngu_cookie_accepted') === 'true') startGame();
-    else {
+    if (localStorage.getItem('bngu_cookie_accepted') === 'true') {
+        startGame();
+    } else {
+        // Startet das Spiel im Hintergrund sofort sichtbar
+        startGame();
+        
+        // Den Cookie-Hinweis im Vordergrund anzeigen
         document.getElementById('cookieBanner').classList.remove('hidden');
+        
         document.getElementById('acceptCookies').addEventListener('click', function() {
             localStorage.setItem('bngu_cookie_accepted', 'true');
             document.getElementById('cookieBanner').classList.add('hidden');
-            startGame();
         });
     }
 }
@@ -491,8 +496,14 @@ function calculateOfflineProgress() {
     const offlineMs = now - gameState.lastVisitTime;
     const offlineHours = Math.floor(offlineMs / (1000 * 60 * 60)); 
 
-    if (offlineHours > 0) {
-        const earnedPoints = offlineHours * getCurrentMilestone().inactiveMulti * getPrestigeMulti();
+    // Punkte gibt es erst, wenn der Spieler mindestens 1 Stunde offline war
+    if (offlineHours >= 1) {
+        // Berechne die gesamten Offline-Sekunden für die Punktevergabe
+        const offlineSeconds = Math.floor(offlineMs / 1000);
+        
+        // Multipliziere die Sekunden mit den jeweiligen Boni
+        const earnedPoints = offlineSeconds * getCurrentMilestone().inactiveMulti * getPrestigeMulti();
+        
         gameState.totalPoints += earnedPoints;
         gameState.stats.inactivePointsToday += earnedPoints;
         gameState.stats.inactivePointsTotal += earnedPoints;
